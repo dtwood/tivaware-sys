@@ -1,0 +1,12 @@
+[package]
+name = "tivaware-sys"
+version = "0.1.0"
+authors = ["David Wood <code@dtwood.co.uk>"]
+edition = "2018"
+
+[dependencies]
+cty = "0.1.5"
+
+[build-dependencies]
+bindgen = "0.42.2"
+cc = "1.0.25"
