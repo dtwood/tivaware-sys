@@ -10,26 +10,22 @@ struct BindgenError;
 
 impl fmt::Display for BindgenError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
+        write!(f, "BindgenError")
     }
 }
 
 impl Error for BindgenError {}
-
-impl From<()> for BindgenError {
-    fn from(_: ()) -> BindgenError {
-        BindgenError
-    }
-}
 
 fn main() -> Result<(), Box<dyn Error>> {
     cc::Build::new()
         .include("c_src")
         .define("gcc", "")
         .flag("-Wno-unused-parameter")
-        .file("c_src/driverlib/sysctl.c")
         .file("c_src/driverlib/emac.c")
-        .compile("emac");
+        .file("c_src/driverlib/interrupt.c")
+        .file("c_src/driverlib/sysctl.c")
+        .file("c_src/driverlib/cpu.c")
+        .compile("tivaware");
 
     let bindings = bindgen::Builder::default()
         .clang_arg("-target")
@@ -38,10 +34,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         .header("stdint.h")
         .header("stdbool.h")
         .header("c_src/driverlib/emac.h")
-        .header("c_src/driverlib/sysctl.h")
+        .header("c_src/driverlib/interrupt.h")
+        .header("c_src/inc/hw_emac.h")
         .ctypes_prefix("::cty")
-        .whitelist_function("EMAC.*")
-        .whitelist_function("SysCtl.*")
+        .whitelist_function(".*")
+        .whitelist_type(".*")
+        .constified_enum(".*")
+        .prepend_enum_name(false)
         .generate_comments(false)
         .generate()
         .map_err(|_| BindgenError)?;
