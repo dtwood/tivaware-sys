@@ -21,10 +21,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         .include("c_src")
         .define("gcc", "")
         .flag("-Wno-unused-parameter")
-        .file("c_src/driverlib/emac.c")
-        .file("c_src/driverlib/interrupt.c")
-        .file("c_src/driverlib/sysctl.c")
-        .file("c_src/driverlib/cpu.c")
         .compile("tivaware");
 
     let bindings = bindgen::Builder::default()
