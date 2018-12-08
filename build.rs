@@ -1,5 +1,4 @@
 use bindgen;
-use cc;
 use std::env;
 use std::error::Error;
 use std::fmt;
@@ -17,12 +16,6 @@ impl fmt::Display for BindgenError {
 impl Error for BindgenError {}
 
 fn main() -> Result<(), Box<dyn Error>> {
-    cc::Build::new()
-        .include("c_src")
-        .define("gcc", "")
-        .flag("-Wno-unused-parameter")
-        .compile("tivaware");
-
     let bindings = bindgen::Builder::default()
         .clang_arg("-target")
         .clang_arg(env::var("TARGET")?)
